@@ -1,0 +1,168 @@
+node n1 {
+    type router
+    model host
+    network-config {
+	hostname Servidor
+	!
+	interface eth0
+	 ip address 192.0.2.10/24
+	 ipv6 address 2001:db8:0::10/64
+	!
+    }
+    canvas c1
+    iconcoords {593.0 546.0}
+    labelcoords {593.0 578.0}
+    interface-peer {eth0 n2}
+    custom-config {
+	custom-config-id service:UserDefined
+	custom-command UserDefined
+	config {
+	files=('pagina.html', )
+	cmdup=('python -m SimpleHTTPServer 80', )
+	meta=Servidor .
+	}
+    }
+    custom-config {
+	custom-config-id service:UserDefined:pagina.html
+	custom-command pagina.html
+	config {
+	<!DOCTYPE html>
+	<html lang="pt-br">
+	<head>
+	    <meta charset="UTF-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>Minha empresa</title>
+	</head>
+	<body>
+	    Minha empresa tem como objetivo vender camisas de time ou até camisas normais
+	</body>
+	</html>
+	}
+    }
+    services {DefaultRoute SSH UserDefined}
+}
+
+node n2 {
+    type router
+    model router
+    network-config {
+	hostname n2
+	!
+	interface eth1
+	 ip address 192.0.3.1/24
+	 ipv6 address 2001:db8:1::1/64
+	!
+	interface eth0
+	 ip address 192.0.2.1/24
+	 ipv6 address 2001:db8:0::1/64
+	!
+    }
+    canvas c1
+    iconcoords {378.0 456.0}
+    labelcoords {378.0 488.0}
+    interface-peer {eth0 n1}
+    interface-peer {eth1 n5}
+}
+
+node n5 {
+    type lanswitch
+    network-config {
+	hostname n5
+	!
+    }
+    canvas c1
+    iconcoords {440.0 338.0}
+    labelcoords {440.0 362.0}
+    interface-peer {e0 n2}
+    interface-peer {e1 n3}
+    interface-peer {e2 n4}
+}
+
+node n3 {
+    type router
+    model PC
+    network-config {
+	hostname Cliente1
+	!
+	interface eth0
+	 ip address 192.0.3.20/24
+	 ipv6 address 2001:db8:1::20/64
+	!
+    }
+    canvas c1
+    iconcoords {297.0 268.0}
+    labelcoords {297.0 300.0}
+    interface-peer {eth0 n5}
+}
+
+node n4 {
+    type router
+    model PC
+    network-config {
+	hostname Cliente2
+	!
+	interface eth0
+	 ip address 192.0.3.21/24
+	 ipv6 address 2001:db8:1::21/64
+	!
+    }
+    canvas c1
+    iconcoords {587.0 273.0}
+    labelcoords {587.0 305.0}
+    interface-peer {eth0 n5}
+}
+
+link l1 {
+    nodes {n1 n2}
+    bandwidth 0
+}
+
+link l2 {
+    nodes {n2 n5}
+    bandwidth 0
+}
+
+link l3 {
+    nodes {n3 n5}
+    bandwidth 0
+}
+
+link l4 {
+    nodes {n5 n4}
+    bandwidth 0
+}
+
+annotation a1 {
+    iconcoords {180.0 163.0 719.0 630.0}
+    type oval
+    label {}
+    labelcolor black
+    fontfamily {Arial}
+    fontsize {12}
+    color #cfcf14
+    width 0
+    border black
+    canvas c1
+}
+
+canvas c1 {
+    name {Canvas1}
+}
+
+option global {
+    interface_names no
+    ip_addresses yes
+    ipv6_addresses yes
+    node_labels yes
+    link_labels yes
+    show_api no
+    background_images no
+    annotations yes
+    grid yes
+    traffic_start 0
+}
+
+option session {
+}
+
